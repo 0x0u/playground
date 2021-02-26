@@ -2,10 +2,11 @@
 # Author: George Tsou
 
 import requests
+import base64
 from urllib.parse import urlparse
 
 print('Welcome to Simple Query for GDSC v0.1')
-query = input('Please input an URL, IP or MD5 for query: ')
+query = input('Please input an URL, IP or hash for query: ')
 
 # query url on URLhaus
 def url_UH():
@@ -18,7 +19,7 @@ def url_UH():
     else:
         return None
 
-# query host on URLhaus
+# query domain on URLhaus
 def host_UH():
     if urlparse(query).hostname == None:
         return None
@@ -49,6 +50,31 @@ def md5_UH():
     else:
         return None
 
+# query URL on vt
+def url_vt():
+    url_id = base64.urlsafe_b64encode(query.encode()).decode().strip("=")
+    url = 'https://www.virustotal.com/api/v3/urls/' + url_id
+    q = requests.get(url, headers={'x-apikey': '58e24a69df406c8c82369aa12954c22ac8a86e5c17f275ca18b8573a816fe905'})
+    p = q.json()
+    d = list(p.keys())[0]
+    if d != 'error':
+        pa = p['data']['attributes']['last_analysis_stats']
+        return pa
+    else:
+        return None
+
+# query hash on vt
+def hash_vt():
+    url = 'https://www.virustotal.com/api/v3/files/' + query
+    q = requests.get(url, headers={'x-apikey': '58e24a69df406c8c82369aa12954c22ac8a86e5c17f275ca18b8573a816fe905'})
+    p = q.json()
+    d = list(p.keys())[0]
+    if d != 'error':
+        pa = p['data']['attributes']['last_analysis_stats']
+        return pa
+    else:
+        return None
+
 if url_UH() != None:
     print('\033[31mThe URL is potentially malicious!\033[0m')
     print('vt result:', url_UH()["result"], 'rf. link:', url_UH()["link"], sep='\n')
@@ -57,6 +83,19 @@ elif host_UH() != None:
     print('\033[31mThe host is potentially malicious!\033[0m')
     print('rf. link:', host_UH(), sep="\n")
 
-else:
-    print("No information yet.")
+elif url_vt() != None:
+    if url_vt()['malicious'] > 0 or url_vt()['suspicious'] > 0:
+        print('\033[31mThe url is potentially malicious!\033[0m')
+        print('malicious:',url_vt()['malicious'], ' suspicious:', url_vt()['suspicious'])
+    else:
+        print("No suspicious information yet.")
 
+elif hash_vt() != None:
+    if hash_vt()['malicious'] > 0 or hash_vt()['suspicious'] > 0:
+        print('\033[31mThe file is potentially malicious!\033[0m')
+        print('malicious:',hash_vt()['malicious'], ' suspicious:', hash_vt()['suspicious'])
+    else:
+        print("No suspicious information yet.")
+
+else:
+    print("No suspicious information yet.")
