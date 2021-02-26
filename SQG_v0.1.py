@@ -5,7 +5,7 @@ import requests
 import base64
 from urllib.parse import urlparse
 
-vt_apikey = '58e24a69df406c8c82369aa12954c22ac8a86e5c17f275ca18b8573a816fe905'
+vt_apikey = 'your api key'
 
 print('Welcome to Simple Query for GDSC v0.1')
 query = input('Please input an URL, IP or hash for query: ')
