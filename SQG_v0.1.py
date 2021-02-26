@@ -5,6 +5,8 @@ import requests
 import base64
 from urllib.parse import urlparse
 
+vt_apikey = '58e24a69df406c8c82369aa12954c22ac8a86e5c17f275ca18b8573a816fe905'
+
 print('Welcome to Simple Query for GDSC v0.1')
 query = input('Please input an URL, IP or hash for query: ')
 
@@ -54,7 +56,7 @@ def md5_UH():
 def url_vt():
     url_id = base64.urlsafe_b64encode(query.encode()).decode().strip("=")
     url = 'https://www.virustotal.com/api/v3/urls/' + url_id
-    q = requests.get(url, headers={'x-apikey': '58e24a69df406c8c82369aa12954c22ac8a86e5c17f275ca18b8573a816fe905'})
+    q = requests.get(url, headers={'x-apikey': vt_apikey})
     p = q.json()
     d = list(p.keys())[0]
     if d != 'error':
@@ -66,7 +68,7 @@ def url_vt():
 # query hash on vt
 def hash_vt():
     url = 'https://www.virustotal.com/api/v3/files/' + query
-    q = requests.get(url, headers={'x-apikey': '58e24a69df406c8c82369aa12954c22ac8a86e5c17f275ca18b8573a816fe905'})
+    q = requests.get(url, headers={'x-apikey': vt_apikey})
     p = q.json()
     d = list(p.keys())[0]
     if d != 'error':
