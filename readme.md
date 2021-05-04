@@ -1,6 +1,6 @@
 # My Playground
 
-Just a place where I dump my coursework and toys. Have fun.
+Just a place to dump my coursework and toys. Have fun.
 
 ### Simple Query
 A simple tool to query url, domain and hash via API of Abuse.ch and VirusTotal.
